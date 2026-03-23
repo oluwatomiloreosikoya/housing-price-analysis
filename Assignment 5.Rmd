@@ -1,0 +1,152 @@
+---
+
+ Housing Price Prediction Using Multiple Linear Regression
+ 
+ This report presents the development and evaluation of a multiple linear regression model to predict housing prices using socio-economic and structural variables.
+
+---
+
+## 1. Data Loading and Initial Exploration
+
+In this section, we load the housing dataset and explore its structure.
+
+```{r}
+# Load dataset
+housing <- read.csv("housing.csv")
+
+# View first rows
+head(housing)
+
+# Check structure
+str(housing)
+
+# Summary stats
+summary(housing)
+```
+
+## 2. Problem Definition and Variable Selection
+
+The objective of this analysis is to develop a regression model that predicts housing prices based on various socio-economic and structural factors.
+
+The target variable selected for this model is **class**, which represents the median value of owner-occupied homes.
+
+Several predictor variables were considered, including RM, LSTAT, PRATIO, TAX, and CRIM, because these variables are logically related to housing value and are commonly used in housing price analysis.
+
+## 3. Data Cleaning and Preprocessing
+
+In this section, we check for missing values and prepare the dataset for regression analysis.
+
+```{r}
+# Check for missing values
+colSums(is.na(housing))
+
+# Check for duplicates
+sum(duplicated(housing))
+
+# Basic structure check again
+str(housing)
+```
+
+The dataset was examined for missing values and duplicate records. No missing values were found; however, 7 duplicate observations were identified. These duplicates are relatively small compared to the dataset size and are unlikely to significantly impact the model.
+
+All variables are numeric, which simplifies the modeling process and ensures compatibility with linear regression techniques.
+
+
+
+## 4. Regression Model Development
+
+In this section, a multiple linear regression model is developed to predict housing prices using selected predictor variables.
+
+```{r}
+# Build regression model
+model <- lm(class ~ RM + LSTAT + PRATIO + TAX + CRIM, data = housing)
+
+# View model summary
+summary(model)
+```
+
+The regression model was built using multiple predictor variables that are expected to influence housing prices. The model estimates the relationship between the target variable (`class`) and the selected predictors.
+
+The `summary()` output provides key statistics such as coefficients, p-values, and R-squared, which help evaluate the strength and significance of the model.
+
+
+## 5. Model Evaluation
+
+In this section, the performance of the regression model is evaluated using key statistical metrics.
+
+```{r}
+# R-squared
+summary(model)$r.squared
+
+# Adjusted R-squared
+summary(model)$adj.r.squared
+
+# RMSE
+rmse <- sqrt(mean(residuals(model)^2))
+rmse
+
+# AIC
+AIC(model)
+```
+
+The model achieved an R-squared value of approximately 0.658, indicating that about 65.8% of the variation in housing prices is explained by the selected predictors.
+
+The adjusted R-squared value is slightly lower than the R-squared, indicating that the model does not suffer from excessive overfitting and that the selected predictors contribute meaningfully to the model.
+
+The RMSE value represents the average prediction error of the model. A lower RMSE indicates better predictive accuracy.
+
+The AIC value provides a measure of model quality while penalizing model complexity. Lower AIC values indicate a better balance between goodness of fit and simplicity.
+
+Overall, the model demonstrates a moderately strong fit, explaining a substantial proportion of the variance in housing prices.
+
+## 6. Model Diagnostics
+
+To further evaluate the performance of the regression model, diagnostic plots were generated.
+
+```{r}
+# Plot diagnostic graphs
+plot(model)
+```
+
+The diagnostic plots provide insights into the validity of the regression assumptions, including linearity, normality of residuals, and homoscedasticity.
+
+These visualizations help identify any potential issues such as non-linearity, outliers, or unequal variance in the residuals.
+
+The diagnostic plots provide additional insight into the assumptions of the regression model.
+
+The **Residuals vs Fitted** plot shows a slight curve, suggesting that the relationship may not be perfectly linear and that some non-linearity may exist in the data.
+
+The **Normal Q-Q plot** indicates that most residuals follow a normal distribution, although there are some deviations at the extremes, suggesting the presence of outliers.
+
+The **Scale-Location plot** shows a slight increase in spread, indicating mild heteroscedasticity (non-constant variance).
+
+The **Residuals vs Leverage plot** identifies a few potential influential observations; however, none appear to strongly dominate the model.
+
+Overall, while the model meets many of the regression assumptions reasonably well, minor deviations suggest that further refinement or transformation of variables could improve model performance.
+
+
+## 7. Interpretation of Results
+
+The regression results provide insights into how different factors influence housing prices.
+
+- **RM (number of rooms)** has a positive coefficient (3.24), indicating that houses with more rooms tend to have higher prices.
+- **LSTAT (lower status population percentage)** has a strong negative impact (-0.62), suggesting that areas with higher socio-economic disadvantage tend to have lower housing values.
+- **PRATIO (pupil-teacher ratio)** also has a negative relationship (-0.94), indicating that poorer educational conditions are associated with lower housing prices.
+
+The variables **TAX** and **CRIM** were not statistically significant (p > 0.05), meaning they do not have a strong independent effect in this model.
+
+These findings align with real-world expectations, where housing prices are influenced by property size, socio-economic conditions, and quality of local infrastructure.
+
+Among all predictors, LSTAT appears to have the strongest impact on housing prices, as indicated by its large magnitude and high statistical significance.
+
+
+
+## 8. Conclusion
+
+This analysis successfully developed a multiple linear regression model to predict housing prices using selected socio-economic and structural variables.
+
+The model demonstrated a good level of explanatory power, with key variables such as number of rooms, socio-economic status, and educational conditions significantly influencing housing values.
+
+While the model performs reasonably well, there is still room for improvement. Future work could include adding more predictors, removing insignificant variables, or exploring more advanced modeling techniques.
+
+Overall, the results provide meaningful insights into the factors that drive housing prices.
